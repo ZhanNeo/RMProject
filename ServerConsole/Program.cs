@@ -107,61 +107,6 @@ namespace ServerConsole
                 Console.WriteLine(ThisIP + ":" + filePath + " 发送完成,接收IP： " + ip);
 
             }
-            else if (recCmd.StartsWith("rec:"))//接收文件
-            {
-                Console.Write("进入接收文件");
-                IPEndPoint clientipe = (IPEndPoint)socket.RemoteEndPoint;
-                String recIP = clientipe.Address.ToString();
-                recCmd = recCmd.Substring(4);
-                FileStream fs = new FileStream(recCmd, FileMode.Create);
-                byte[] sendCmdByte = Encoding.Default.GetBytes("ok");//回应ok
-
-                ns.Write(sendCmdByte, 0, sendCmdByte.Length);
-
-                byte[] recBlock = new byte[blkSize];
-                while (true)
-                {
-                    int readSize = ns.Read(recBlock, 0, blkSize);
-                    if (readSize == 0) break;
-                    fs.Write(recBlock, 0, readSize);
-                }
-                fs.Close();
-
-                Console.WriteLine(ThisIP + ":" + recCmd + " 接收完成,来自IP: " + recIP);
-                Console.WriteLine("fuwuqi" + ServerIP);
-                TcpClient tc = new TcpClient(ServerIP, 12347);//向主服务端发生完成消息
-                NetworkStream tns = tc.GetStream();
-                byte[] finMesByte = Encoding.Default.GetBytes("finish:" + ThisIP + ":" + Port + ";" + "RecFileComplete" + ";" + recCmd + ";" + recIP + ":" + Port);
-                tns.Write(finMesByte, 0, finMesByte.Length);
-                tns.Flush();
-                tns.Close();
-            }
-            else
-            {
-                if (recCmd.StartsWith("\0"))
-                {
-                    Console.WriteLine("已经被连接");
-                    IPEndPoint clientipe = (IPEndPoint)socket.RemoteEndPoint;
-                    ServerIP = clientipe.Address.ToString();
-                    iswork = true;
-                    Console.Write("命令出错");
-                    return;
-                }
-                byte[] cmdTemp = Encoding.Default.GetBytes(recCmd);
-                string cmd = Encoding.Default.GetString(cmdTemp).Trim('\0');
-                Console.Write("命令执行" + cmd);
-                Process p = new Process();
-                p.StartInfo.FileName = "cmd.exe";
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardInput = true;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.CreateNoWindow = true;
-                p.Start();
-                p.StandardInput.WriteLine(cmd);
-                p.StandardInput.WriteLine("exit");
-                p.WaitForExit();
-                p.Close();
-            }
             iswork = true;
         }
     }
