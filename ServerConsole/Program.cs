@@ -78,7 +78,7 @@ namespace ServerConsole
             {
                 Console.Write("进入发送文件");
                 IPEndPoint clientipe = (IPEndPoint)socket.RemoteEndPoint;
-                String recIP = clientipe.Address.ToString();//获取服务端IP
+                String recIP = clientipe.Address.ToString();
                 recCmd = recCmd.Substring(9);
                 string[] temp = recCmd.Split(';');//接收的命令包含IP:Port和文件路径两段
                 string ip = temp[0].Split(':')[0];
