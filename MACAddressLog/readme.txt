@@ -1,0 +1,3 @@
+changeMACAddress:用于以后修改mac地址用
+logMACAddress：用于记录一张全新的mac地址分布表
+MACAddressLog：可以给主程序调用的类库，参数是mac地址，返回行号和列号
